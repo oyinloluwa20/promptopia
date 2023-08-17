@@ -5,16 +5,16 @@ import { useState, useEffect } from "react"
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react'
 
 const Nav = () => {
-    const isUserLogggedIn = true;
+    const { data: session } = useSession();
     const [providers, setProviders] = useState(null);
     const [toggleDropdown, setToggleDropdown] = useState(false)
 
     useEffect(() => {
-        const setProviders = async () => {
+        const setUpProviders = async () => {
             const response = await getProviders()
             setProviders(response)
         }
-        setProviders();
+        setUpProviders();
     }, [])
 
     return (
@@ -29,22 +29,25 @@ const Nav = () => {
                 />
                 <p className="logo_text">Promtopia</p>
             </Link>
-
+            {/* {alert(session?.user)} */}
+            {/* Desktop Navigation */}
             <div className="sm:flex hidden">
-                {isUserLogggedIn ? (
+                {session?.user ? (
                     <div className="flex gap-3 md:gap-5">
                         <Link href={"/create-prompt"} className="black_btn">Create Post</Link>
                         <button type="button" onClick={signOut} className="outline_btn">
                             Sign Out
                         </button>
+                        <Link href={"/profile"}>
 
-                        <Image
-                            src={"assets/images/profile.svg"}
-                            alt="Profile"
-                            width={37}
-                            height={37}
-                            className="rounded-full"
-                        />
+                            <Image
+                                src={"assets/images/profile.svg"}
+                                alt="Profile"
+                                width={37}
+                                height={37}
+                                className="rounded-full"
+                            />
+                        </Link>
                     </div>
 
                 ) : (
@@ -65,7 +68,7 @@ const Nav = () => {
 
             {/* Moblle Navigation */}
             <div className="sm:hidden flex relative">
-                {isUserLogggedIn ? (
+                {session?.user ? (
                     <div className="flex">
 
                         <Image
